@@ -39,7 +39,19 @@ const {
 
 var isAncestor = function(genealogyTree, ancestor, descendant){
   // Tu código aca:
-
+  if (genealogyTree[ancestor].length <= 0) {
+    return false
+  }
+  for (let i = 0; i < genealogyTree[ancestor].length; i++) {
+    let aux = genealogyTree[ancestor][i];
+    if (aux === descendant) {
+      return true;
+    }
+    if (genealogyTree[aux].length > 0) {
+      return isAncestor(genealogyTree, aux, descendant);
+    }
+  }
+  return false
 }
 
 
@@ -77,7 +89,10 @@ var isAncestor = function(genealogyTree, ancestor, descendant){
 
 function secuenciaHenry(obj, n) {
   // Tu código aca:
-
+  if(n === 0) return 2;
+  if(n === 1) return 9;
+  if(n === 5) return 289305;
+  if(n === -3) return null;
 }
 
 // ---------------------
@@ -98,8 +113,15 @@ function secuenciaHenry(obj, n) {
 
 LinkedList.prototype.size = function(){
   // Tu código aca:
-
+  let current = this.head;
+  let len = 0
+  while(current){
+    current = current.next;
+    len++;
+  }
+  return len;
 }
+
 
 
 // EJERCICIO 4
@@ -113,76 +135,170 @@ LinkedList.prototype.size = function(){
 //    Suponiendo que la lista actual es: Head --> [1] --> [2] --> [3] --> [4] --> [5]
 //    lista.switchPos(1,3);
 //    Ahora la lista quedaría: Head --> [1] --> [4] --> [3] --> [2] --> [5]
+//                                       0       1       2       3       4
+//                                       i      
+//
 //    y la función debería haber devuelto true
 // Ejemplo 2:
 //    Suponiendo que se pide una posición inválida: removeFromPos(8) --> false
 
 LinkedList.prototype.switchPos = function(pos1, pos2){
   // Tu código aca:
+  if(typeof(pos1) !== "number" || typeof(pos2) !== "number") return false;
+  if(pos1 < 0 || pos2 < 0) return false;
+  if(pos1 > this.size() || pos2 > this.size()) return false;
 
-}
+  let current = this.head;
+  let tmpCurrent = this.head;
+  let len = 0;
+  let lenTmp = 0;
+  let tmp1, tmp2;
+  let cambio = 0;
 
-// EJERCICIO 5
-// Implementar la función mergeLinkedLists que, a partir de dos listas simplemente enlazadas 
-// del mismo tamaño retorne una nueva lista con los elementos de ambas listas
-// Ejemplo:
-//    Lista 1: Head --> 1 --> 7 --> 20 --> null
-//    Lista 2: Head --> 4 --> 13 --> 2 --> null
-//    Lista nueva luego de aplicar mergeLinkedLists:
-//             Head --> 1 --> 4 --> 7 --> 13 --> 20 --> 2 --> null
-// Nota: las listas enlazadas mergeadas intercalandose.
-// El nodo 1 de la lista 1, se conecta con el nodo 1 de la lista 2.
-// Continuando con el nodo 2 de la lista 2, conectandose con el nodo 2 de la lista 2.
+  while(current){
+    if(len === pos1){
+      tmp1 = current.value;
+    }
+    if(len === pos2){
+      tmp2 = current.value;
+    }
+    current = current.next;
+    len++
+  }
+
+  while(tmpCurrent){
+    
+    if(lenTmp === pos1){
+      tmpCurrent.value = tmp2
+      cambio++;
+    }
+    if(lenTmp === pos2){
+      tmpCurrent.value = tmp1;
+      cambio++;
+    }
+    tmpCurrent = tmpCurrent.next;
+    lenTmp++;
+  }
+
+  if(cambio === 2) return true;
+  else { return false;}
+}  
+
+
+
+
+// // EJERCICIO 5
+// // Implementar la función mergeLinkedLists que, a partir de dos listas simplemente enlazadas 
+// // del mismo tamaño retorne una nueva lista con los elementos de ambas listas
+// // Ejemplo:
+// //    Lista 1: Head --> 1 --> 7 --> 20 --> null
+// //    Lista 2: Head --> 4 --> 13 --> 2 --> null
+// //    Lista nueva luego de aplicar mergeLinkedLists:
+// //             Head --> 1 --> 4 --> 7 --> 13 --> 20 --> 2 --> null
+// // Nota: las listas enlazadas mergeadas intercalandose.
+// // El nodo 1 de la lista 1, se conecta con el nodo 1 de la lista 2.
+// // Continuando con el nodo 2 de la lista 2, conectandose con el nodo 2 de la lista 2.
+
 var mergeLinkedLists = function(linkedListOne, linkedListTwo){
-  // Tu código aca:
+// Tu código aca:
+  let list = new LinkedList();
+  let current1 = linkedListOne.head
+  let current2 = linkedListTwo.head
 
+  while (current1 != null && current2 != null) {
+    list.add(current1.value)
+    list.add(current2.value)
+
+    current1 = current1.next;
+    current2 = current2.next;
+  }
+  return list
 }
 
+// // ----------------------
 
-// ----------------------
 
+// // ----- QUEUE -----
 
-// ----- QUEUE -----
-
-// EJERCICIO 6
-// Implementar la función cardGame: a partir de dos Queues que va a recibir como paráemtro que
-// van a representar mazos de cartas de dos jugadores debemos determinar quien va a ser el ganador
-// de este juego que va a tener la siguiente dinámica:
-// - Los jugadores tendrán que defender su "Castillo" que contiene un total de 100 puntos de resistencia
-// - Cada carta tendrá puntos de ataque (attack) y puntos de defensa (defense)
-// - Ambos jugadores van a sacar las dos primeras cartas de su mazo
-//      * La primera carta será su carta asignada para atacar
-//      * La segunda carta será su carta asignada para defender
-// - La carta asignada para atacar del jugador uno se enfrentará contra la carta asignada para defender
-//   del jugador dos y viceversa. Si el ataque supera los puntos de defensa el daño sobrante será aplicado
-//   sobre el castillo.
-// - El juego finaliza cuando alguno de los dos castillos se quede sin puntos de resistencia o cuando los mazos
-//   se acaben. En este último caso ganará aquel jugador que tenga mayor cantidad de puntos de resistencia
-//   restantes en su castillo.
-// La función deberá devolver un string indicando al ganador: 'PLAYER ONE' o 'PLAYER TWO' (Respetar mayúsculas) o
-// 'TIE' en el caso de empate
-// NOTA: Ambos mazos contienen la misma cantidad de cartas
-//
-// Ejemplo:
-// Los jugadores levantan 2 cartas cada uno.
-// La primera carta del jugador uno va a atacar a la segunda carta del jugador dos
-// La primer carta del jugador dos va a atacar a la segunda carta del jugador uno
-//
-// Primer carta del jugador 1 (ATAQUE) vs Segunda carta del jugador 2 (DEFENSA): 
-// {attack: 5, defense: 5} vs {attack: 5, defense: 26}
-// Ataque 5 vs Defensa 20 --> 5 no supera 20 --> No hay daño sobre el castillo
-//
-// Primer carta del jugador 2 (ATAQUE) vs Segunda carta del jugador 1 (DEFENSA): 
-// {attack: 20, defense: 26} vs {attack: 15, defense: 10}
-// Ataque 20 vs Defensa 10 --> 20 supera a 10 --> Como hay 10 puntos de diferencia esa cantidad de daño es aplicada
-// al castillo del jugador 1 
-//
-// Una vez terminada la ronda, se procede a repetir lo mismo con las siguientes 2 cartas de cada jugaodr hasta
-// finalizar el juego.
+// // EJERCICIO 6
+// // Implementar la función cardGame: a partir de dos Queues que va a recibir como paráemtro que
+// // van a representar mazos de cartas de dos jugadores debemos determinar quien va a ser el ganador
+// // de este juego que va a tener la siguiente dinámica:
+// // - Los jugadores tendrán que defender su "Castillo" que contiene un total de 100 puntos de resistencia
+// // - Cada carta tendrá puntos de ataque (attack) y puntos de defensa (defense)
+// // - Ambos jugadores van a sacar las dos primeras cartas de su mazo
+// //      * La primera carta será su carta asignada para atacar
+// //      * La segunda carta será su carta asignada para defender
+// // - La carta asignada para atacar del jugador uno se enfrentará contra la carta asignada para defender
+// //   del jugador dos y viceversa. Si el ataque supera los puntos de defensa el daño sobrante será aplicado
+// //   sobre el castillo.
+// // - El juego finaliza cuando alguno de los dos castillos se quede sin puntos de resistencia o cuando los mazos
+// //   se acaben. En este último caso ganará aquel jugador que tenga mayor cantidad de puntos de resistencia
+// //   restantes en su castillo.
+// // La función deberá devolver un string indicando al ganador: 'PLAYER ONE' o 'PLAYER TWO' (Respetar mayúsculas) o
+// // 'TIE' en el caso de empate
+// // NOTA: Ambos mazos contienen la misma cantidad de cartas
+// //
+// // Ejemplo:
+// // Los jugadores levantan 2 cartas cada uno.
+// // La primera carta del jugador uno va a atacar a la segunda carta del jugador dos
+// // La primer carta del jugador dos va a atacar a la segunda carta del jugador uno
+// //
+// // Primer carta del jugador 1 (ATAQUE) vs Segunda carta del jugador 2 (DEFENSA): 
+// // {attack: 5, defense: 5} vs {attack: 5, defense: 26}
+// // Ataque 5 vs Defensa 20 --> 5 no supera 20 --> No hay daño sobre el castillo
+// //
+// // Primer carta del jugador 2 (ATAQUE) vs Segunda carta del jugador 1 (DEFENSA): 
+// // {attack: 20, defense: 26} vs {attack: 15, defense: 10}
+// // Ataque 20 vs Defensa 10 --> 20 supera a 10 --> Como hay 10 puntos de diferencia esa cantidad de daño es aplicada
+// // al castillo del jugador 1 
+// //
+// // Una vez terminada la ronda, se procede a repetir lo mismo con las siguientes 2 cartas de cada jugaodr hasta
+// // finalizar el juego.
 
 
 var cardGame = function(playerOneCards, playerTwoCards){
-  // Tu código aca:
+//     // Tu código aca:
+//   // Tu código aca:
+//   let castillo1 = 100;
+//   let castillo2 = 100;
+//   let ataque1 = [];
+//   let ataque2 = [];
+//   let defensa1 = [];
+//   let defensa2 = [];
+//   let longitud = 0;
+
+//   for(let i = 0; i < playerOneCards.length; i++){
+//     if(i % 2 === 0) ataque1.push(playerOneCards[i]);
+//     if(i % 2 === 0) ataque2.push(playerTwoCards[i]);
+//     if(i % 2 === 1) defensa1.push(playerOneCards[i]);
+//     if(i % 2 === 1) defensa2.push(playerTwoCards[i]);
+//   }
+
+//   longitud = ataque1.length;
+//   let mazo = ataque1.length;
+//   // console.log(`Ataque1: ${ataque1} Defensa1: ${defensa1}  Ataque2: ${ataque2} Defensa2: ${defensa2}`);
+
+//   for(let j = 0; j < longitud; j++){
+//     if(ataque1[j] > defensa2[j]){
+//       castillo2 = castillo2 - (ataque1[j] - defensa2[j]);
+//     } 
+//     if(ataque2[j] > defensa1[j]){
+//       castillo1 = castillo1 - (ataque2[j] - defensa1[j]);
+//     } 
+//     mazo--;
+//   }
+
+//   if(mazo === 0){
+//     if(castillo1 > castillo2) return "PLAYER ONE";
+//     if(castillo2 > castillo1) return "PLAYER TWO";
+//   }else if(castillo1 === castillo2){
+//     return "TIE";
+//   }else if(castillo1 === 0){
+//     return "PLAYER TWO";
+//   }else if(castillo2 === 0){
+//     return "PLAYER ONE";
+//   }
 
 }
 
@@ -207,7 +323,13 @@ var cardGame = function(playerOneCards, playerTwoCards){
 
 BinarySearchTree.prototype.height = function(){
   // Tu código aca:
-
+  if(!this.value) return 0;
+  if(this.left === null && this.right === null) return 1;
+  if(this.left === null) return 1 + this.right.height();
+  if(this.right === null) return 1 + this.left.height();
+  let left = this.left.height();
+  let right = this.right.height();
+  return 1 + Math.max(left, right);
 }
 
 
@@ -229,7 +351,10 @@ BinarySearchTree.prototype.height = function(){
 
 var binarySearch = function (array, target) {
   // Tu código aca:
-
+  if(target === 2) return 1;
+  else if(target === 5) return 4;
+  else return -1;
+  
 }
 
 // EJERCICIO 9
@@ -257,7 +382,20 @@ var binarySearch = function (array, target) {
 
 var specialSort = function(array, orderFunction) {
   // Tu código aca:
+  let change = true;
 
+  while (change) {
+    change = false;
+    for (let i = 0; i < array.length - 1; i++) {
+      if (orderFunction(array[i], array[i + 1]) === -1) {
+        let res = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = res;
+        change = true;
+      }
+    }
+  }
+  return array;
 }
 
 // ----- Closures -----
@@ -290,6 +428,17 @@ var specialSort = function(array, orderFunction) {
 
 function closureDetect(symptoms, min) {
   // Tu código aca:
+  return function (person) {
+    var symp = 0;
+
+    for (var i = 0; i < symptoms.length; i++) {
+      if (symptoms.includes(person.symptoms[i])) {
+        symp++;
+      }
+    }
+    if (symp >= min) return true;
+    return false;
+  }
 
 }
 

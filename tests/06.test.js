@@ -22,7 +22,7 @@ describe('EJERCICIO 6: cardGame', function() {
     strongPlayer = new Queue();
     weakPlayer = new Queue();
     
-    playerOne.enqueue({attack: 5, defense: 5});
+    playerOne.enqueue({attack: 5, defense: 5});  
     playerOne.enqueue({attack: 15, defense: 10});
 
     playerOne.enqueue({attack: 28, defense: 26});
@@ -39,7 +39,7 @@ describe('EJERCICIO 6: cardGame', function() {
     playerOneCopy.enqueue({attack: 21, defense: 18});
     playerOneCopy.enqueue({attack: 15, defense: 12});
 
-    playerTwo.enqueue({attack: 20, defense: 26});
+    playerTwo.enqueue({attack: 20, defense: 26});  
     playerTwo.enqueue({attack: 5, defense: 26});
 
     playerTwo.enqueue({attack: 15, defense: 15});
